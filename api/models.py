@@ -16,7 +16,7 @@ class CoffeeBean(models.Model):
 # Map: location
 # Currency 
 
-
+# 3
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     totalPrice = models.DecimalField(max_digits=10, decimal_places=3, default=0)

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserCreateAPIView, CoffeeBeanListView, CoffeeBeanDetailView, CoffeeBeanCart, CheckOutCoffeeBean
+from .views import *
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
@@ -9,5 +9,7 @@ urlpatterns = [
     path('CoffeeBeanList/', CoffeeBeanListView.as_view(), name='list'),
     path('CoffeeBeanDetail/<int:object_id>/', CoffeeBeanDetailView.as_view(), name='detail'),
     path('CoffeeBeanCart/', CoffeeBeanCart.as_view(), name='cart'),
-    path('CheckOut/',CheckOutCoffeeBean.as_view(), name='check-Out')
+    path('CheckOut/',CheckOutCoffeeBean.as_view(), name='check-Out'),
+    path('HistoricOrder/',OrderHistoricalList.as_view(), name='historic-order')
 ]
+

@@ -3,20 +3,6 @@ from rest_framework import serializers
 from api.models import *
 from rest_framework_jwt.settings import api_settings
 
-class UserLoginSerializer(serializers.Serializer):
-    token = serializers.CharField(allow_blank=True, read_only=True)
-
-    def validate(self, data):
-        
-        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
-        payload = jwt_payload_handler(user_obj)
-        token = jwt_encode_handler(payload)
-
-        data["token"] = token
-        return data
-
 class CoffeeBeanDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = CoffeeBean
@@ -30,7 +16,7 @@ class CoffeeBeanListSerializer(serializers.ModelSerializer):
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = ['Quant','cofeeBean',]
+        fields = ['Quant','cofeeBean']
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -51,21 +37,60 @@ class UserCreateSerializer(serializers.ModelSerializer):
         new_user.save()
         return validated_data
 
-class UserLoginSerializer(serializers.Serializer):
+# 2
 
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
+class HistoricOrderSerializer(serializers.ModelSerializer):
+    # order_items = CartItemSerializer()
+    order_items = serializers.SerializerMethodField()
 
-    def validate(self, data):
-        my_username = data.get('username')
-        my_password = data.get('password')
+    class Meta:
+         model = Order
+         fields = ['id','totalPrice','completed_order', 'order_items']
 
-        try:
-            user_obj = User.objects.get(username=my_username)
-        except:
-            raise serializers.ValidationError("This username does not exist")
+    def get_order_items(self, obj):
+        order_itemsX = OrderItem.objects.filter(order=obj)
+        return CartItemSerializer(order_itemsX, many=True).data 
 
-        if not user_obj.check_password(my_password):
-            raise serializers.ValidationError("Incorrect username/password combination! Try again")
 
-        return data
+
+
+
+
+
+
+
+
+# class UserLoginSerializer(serializers.Serializer):
+#     token = serializers.CharField(allow_blank=True, read_only=True)
+
+#     def validate(self, data):
+        
+#         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+#         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+#         payload = jwt_payload_handler(user_obj)
+#         token = jwt_encode_handler(payload)
+
+#         data["token"] = token
+#         return data
+
+# class UserLoginSerializer(serializers.Serializer):
+
+#     username = serializers.CharField()
+#     password = serializers.CharField(write_only=True)
+
+#     def validate(self, data):
+#         my_username = data.get('username')
+#         my_password = data.get('password')
+
+#         try:
+#             user_obj = User.objects.get(username=my_username)
+#         except:
+#             raise serializers.ValidationError("This username does not exist")
+
+#         if not user_obj.check_password(my_password):
+#             raise serializers.ValidationError("Incorrect username/password combination! Try again")
+
+#         return data
+
+        
